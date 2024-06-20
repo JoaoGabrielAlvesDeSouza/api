@@ -132,10 +132,15 @@ class Controller {
             $query = User::select();
             if ($request->has("search")) {
                 $query->select("id", "name", "surname", "description", "template");
-                $query->orWhere("name", "like", "%".$request->search."%");
-                $query->orWhere("surname", "like", "%".$request->search."%");
-                $query->orWhere("description", "like", "%".$request->search."%");
-                $query->where("status", "=", true);
+                
+                // Agrupar as condições OR
+                $query->where("status", "=", true)
+                      ->where(function($query) use ($request) {
+                          $query->orWhere("name", "like", "%".$request->search."%")
+                                ->orWhere("surname", "like", "%".$request->search."%")
+                                ->orWhere("description", "like", "%".$request->search."%");
+                      });
+            
                 $users = $query->get();
             
                 return response()->json($users, 200);

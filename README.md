@@ -7,6 +7,9 @@ docker-compose exec app php artisan migrate
 docker-compose exec app php artisan db:seed
 ```
 
+AdminEmailFromDataBase@mail.com
+1q2w3e4r
+
 <h1> Rotas </h1>
 
 <bold> Url base: </bold> http://localhost:8000/api/
