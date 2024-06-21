@@ -16,7 +16,8 @@ class Controller {
                 "surname"=>"string|required|max:100|min:3",
                 "password"=>"string|required|min:8",
                 "email"=>"string|required|unique:users",
-                "description"=>"string|required|min:10"
+                "description"=>"string|required|min:10",
+                "tags"=>"array",
             ]);
             $usuario = $request->all();
             $usuario["password"]=Hash::make($usuario["password"]);
@@ -132,7 +133,7 @@ class Controller {
             $query = User::select();
             if ($request->has("search")) {
                 $query->select("id", "name", "surname", "description", "template");
-                
+
                 // Agrupar as condições OR
                 $query->where("status", "=", true)
                       ->where(function($query) use ($request) {
@@ -140,13 +141,13 @@ class Controller {
                                 ->orWhere("surname", "like", "%".$request->search."%")
                                 ->orWhere("description", "like", "%".$request->search."%");
                       });
-            
+
                 $users = $query->get();
-            
+
                 return response()->json($users, 200);
             }
             return response()->json([ "Nenhum Usuário encontrado" ], 404);
-            
+
         } catch (Exception $exception) {
             return response()->json($exception->__toString(), 400);
         }
@@ -160,6 +161,25 @@ class Controller {
         } catch (Exception $exception) {
             return response()->json($exception->__toString(), 400);
         }
+    }
+
+    public function searchByTag(Request $request)
+    {
+        $request->validate([
+            'tags' => 'required|array',
+            'tags.*' => 'string',
+        ]);
+
+        $tags = $request->tags;
+
+        $tagsList = "{" . implode(",", $tags) . "}";
+
+        $users = User::whereRaw("EXISTS (
+            SELECT 1 FROM jsonb_array_elements_text(tags) as tag
+            WHERE tag = ANY(?::text[])
+        )", [$tagsList])->get();
+
+        return response()->json($users);
     }
 
 }
