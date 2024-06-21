@@ -5,6 +5,7 @@ Após clonar o projeto, entre nele e digite
 docker compose up --build
 docker-compose exec app php artisan migrate
 docker-compose exec app php artisan db:seed
+docker-compose exec app php artisan storage:link
 ```
 
 AdminEmailFromDataBase@mail.com

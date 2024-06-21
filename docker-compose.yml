@@ -10,6 +10,8 @@ services:
       - "8000:80"
     volumes:
       - .:/var/www/html
+      - ./api/public:/var/www/html/public
+      - ./api/storage:/var/www/html/storage
     environment:
       - APP_ENV=local
       - APP_DEBUG=true

@@ -24,7 +24,8 @@ class User extends Authenticatable
         "password",
         "description",
         "template",
-        "status"
+        "status",
+        "tags",
     ];
 
     /**
@@ -32,12 +33,16 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    
+
     protected $hidden = [
         "password",
         "remember_token",
         "created_at",
-        "updated_at"
+        "updated_at",
+    ];
+
+    protected $casts = [
+        'tags' => 'array',
     ];
 
     /**
@@ -51,5 +56,10 @@ class User extends Authenticatable
             "email_verified_at" => "datetime",
             "password" => "hashed",
         ];
+    }
+
+    public function images()
+    {
+        return $this->hasMany(UserImage::class);
     }
 }
