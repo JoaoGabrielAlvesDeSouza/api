@@ -26,6 +26,7 @@ class User extends Authenticatable
         "template",
         "status",
         "tags",
+        "avatar",
     ];
 
     /**

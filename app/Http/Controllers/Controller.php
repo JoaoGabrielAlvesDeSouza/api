@@ -73,6 +73,7 @@ class Controller {
                 "name"=>"string|required|min:3|max:100",
                 "surname"=>"string|required|min:3|max:100",
                 "description"=>"string|required|min:10|max:500",
+                "avatar" => "string"
             ]);
 
             if ($request->has("name"))
@@ -83,6 +84,9 @@ class Controller {
 
             if ($request->has("description"))
                 $user->description = $request->description;
+
+            if ($request->has("avatar"))
+                $user->avatar = $request->avatar;
 
             $user->save();
 
