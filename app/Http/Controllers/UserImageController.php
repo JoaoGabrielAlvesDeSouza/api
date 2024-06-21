@@ -22,7 +22,7 @@ class UserImageController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store('images');
-                $paths[] = $path;
+                $paths[] = Storage::disk('public')->url($path);
 
                 $userImage = new UserImage();
                 $userImage->user_id = $request->user_id;
