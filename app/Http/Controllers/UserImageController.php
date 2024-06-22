@@ -9,32 +9,35 @@ use Illuminate\Support\Facades\Storage;
 class UserImageController extends Controller
 {
     public function upload(Request $request)
-    {
-        // Validação da requisição
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'images' => 'required',
-            'images.*' => 'image|max:2048'
-        ]);
+{
+    // Validação da requisição
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'images' => 'required',
+        'images.*' => 'image|max:2048'
+    ]);
 
-        $paths = [];
+    $paths = [];
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('images');
-                $paths[] = Storage::disk('public')->url($path);
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $image) {
+            // Armazene a imagem na pasta 'public/images'
+            $path = $image->store('public/images');
+            // Obtém a URL acessível publicamente
+            $publicPath = Storage::url($path);
+            $paths[] = $publicPath;
 
-                $userImage = new UserImage();
-                $userImage->user_id = $request->user_id;
-                $userImage->file_path = $path;
-                $userImage->save();
-            }
-
-            return response()->json(['paths' => $paths], 200);
+            $userImage = new UserImage();
+            $userImage->user_id = $request->user_id;
+            $userImage->file_path = $path;
+            $userImage->save();
         }
 
-        return response()->json(['message' => 'No images uploaded'], 400);
+        return response()->json(['paths' => $paths], 200);
     }
+
+    return response()->json(['message' => 'No images uploaded'], 400);
+}
 
     public function getUserImages($id)
     {
