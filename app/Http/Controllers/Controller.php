@@ -186,4 +186,27 @@ class Controller {
         return response()->json($users);
     }
 
+    public function changePassword(Request $request)
+    {
+        try {
+            $request->validate([
+                'current_password' => 'required|string|min:8',
+                'new_password' => 'required|string|min:8|confirmed',
+            ]);
+
+            $user = $request->user();
+
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json(['message' => 'Senha incorreta!'], 400);
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return response()->json(['message' => 'Senha atualizada com sucesso!'], 200);
+        } catch (Exception $exception) {
+            return response()->json($exception->__toString(), 400);
+        }
+    }
+
 }
