@@ -24,3 +24,4 @@ Route::post("/register", [Controller::class, "register"]); //pronto
 Route::post("/login", [Controller::class, "login"]); //pronto
 Route::get("/buscar", [Controller::class, "buscarOngs"]);
 Route::get("/buscar/{id}", [Controller::class, "buscarPorId"]);
+Route::middleware("auth:sanctum")->post("/mudarSenha", [Controller::class, "changePassword"]);
